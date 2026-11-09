@@ -1,0 +1,23 @@
+import pathlib
+{%- if is_qt %}
+import os
+{%- endif %}
+
+import pytest
+{%- if is_qt %}
+
+os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+{%- endif %}
+
+
+@pytest.fixture(scope="session")
+def output_dir() -> pathlib.Path:
+    """Output directory for tests.
+
+    Returns:
+        pathlib.Path: path to test output directory.
+
+    """
+    out_dir = pathlib.Path.cwd() / ".test_output"
+    out_dir.mkdir(exist_ok=True)
+    return out_dir

@@ -1,0 +1,13 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    uses: sowwic/gh-workflows/.github/workflows/release.yml@v1
+    permissions:
+      contents: write
+    with:
+      title: {{ project_name }}

@@ -1,0 +1,38 @@
+site_name: {{ project_name }} Documentation
+site_description: Documentation for {{ project_name }}.
+site_author: {{ author }}
+theme:
+  name: material
+
+plugins:
+  - search
+  - mkdocs-autoapi:
+      autoapi_dir: "src/{{ package_slug }}"
+      autoapi_ignore:
+        - "**/version.py"
+        {% if is_qt %}
+        - "**/hooks-pyside6.py"
+        {% endif %}
+        - "**/resources/*"
+        - "**/main.py"
+      autoapi_file_patterns:
+        - "*.py"
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: ["src/{{ package_slug }}"]
+          options:
+            docstring_style: google
+            show_signature: true
+            show_source: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_object_full_path: false
+            show_category_heading: true
+            merge_init_into_class: true
+            show_if_no_docstring: true
+  - autorefs
+
+nav:
+  - User Guide: user/index.md
+  - Developer Guide: dev/index.md

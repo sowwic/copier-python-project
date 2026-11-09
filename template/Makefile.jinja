@@ -1,0 +1,18 @@
+# Common targets come from sowwic/makefiles, fetched into .make/ (commit it). `make update-make` fetches them again.
+APP_NAME = {{ project_slug }}
+PACKAGE_NAME = {{ package_slug }}
+RELEASE_BRANCH ?= {{ release_branch }}
+DEVELOP_BRANCH ?= {{ develop_branch }}
+{%- if is_qt %}
+PYTEST_CMD = QT_QPA_PLATFORM=offscreen uv run pytest tests
+BUILD_PREREQS = qrc
+{%- endif %}
+
+MAKEFILES_REF ?= v1
+MAKEFILES_URL ?= https://raw.githubusercontent.com/sowwic/makefiles/$(MAKEFILES_REF)
+MAKEFILES_MODULES = general/python{% if is_qt %} general/qt{% endif %}{% if is_qml %} general/qml{% endif %}{% if bundle %} general/bundle{% endif %}{% if macos %} general/macos-app{% endif %}
+
+.make/%.mk:
+	@mkdir -p $(dir $@)
+	@curl -fsSL $(MAKEFILES_URL)/$*.mk -o $@
+include $(MAKEFILES_MODULES:%=.make/%.mk)

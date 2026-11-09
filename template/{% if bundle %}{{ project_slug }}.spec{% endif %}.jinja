@@ -1,0 +1,65 @@
+# -*- mode: python ; coding: utf-8 -*-
+from pathlib import Path
+
+# --- Read VERSION at build time ---
+version_file = Path("VERSION")
+app_version = version_file.read_text().strip() if version_file.exists() else "0.0.0"
+
+# --- Analysis ---
+a = Analysis(
+    ['src/{{ package_slug }}/main.py'],
+    pathex=[],
+    binaries=[],
+    datas=[('VERSION', '.')],
+    hiddenimports=[],
+    hookspath=['src/{{ package_slug }}'],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    noarchive=False,
+    optimize=0,
+)
+
+pyz = PYZ(a.pure)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    [],
+    exclude_binaries=True,
+    name='{{ project_slug }}',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    console=False,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='{{ project_slug }}',
+)
+{%- if macos %}
+
+# --- Bundle for macOS ---
+app = BUNDLE(
+    coll,
+    name='{{ project_slug }}.app',
+    icon='src/{{ package_slug }}/resources/icons/{{ project_slug }}.icns',
+    bundle_identifier=None,
+    info_plist={
+        "CFBundleShortVersionString": app_version,  # shown in Finder
+        "CFBundleVersion": app_version,             # internal build number
+    },
+)
+{%- endif %}

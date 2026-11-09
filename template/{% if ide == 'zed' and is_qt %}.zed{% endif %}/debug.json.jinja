@@ -1,0 +1,11 @@
+[
+  {
+    "label": "Launch {{ project_name }}",
+    "adapter": "Debugpy",
+    "request": "launch",
+    "module": "{{ package_slug }}.main",
+    "python": ".venv/bin/python",
+    "env_file": ".env",
+    "cwd": "$ZED_WORKTREE_ROOT",
+  },
+]

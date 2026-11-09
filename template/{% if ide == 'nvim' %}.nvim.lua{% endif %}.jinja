@@ -1,0 +1,37 @@
+-- Project-local Neovim config. Requires `vim.o.exrc = true` (Neovim 0.9+); run `:trust` once.
+-- Debugging needs nvim-dap and nvim-dap-python (adapter name "python").
+local ok, dap = pcall(require, "dap")
+if not ok then
+  return
+end
+
+local root = vim.fn.getcwd()
+local python = root .. "/.venv/bin/python"
+local env_file = root .. "/.env"
+
+dap.configurations.python = dap.configurations.python or {}
+{% if is_qt %}
+table.insert(dap.configurations.python, {
+  type = "python",
+  request = "launch",
+  name = "{{ project_name }}",
+  module = "{{ package_slug }}.main",
+  pythonPath = python,
+  envFile = env_file,
+  cwd = root,
+  console = "internalConsole",
+  justMyCode = true,
+})
+{% endif %}
+table.insert(dap.configurations.python, {
+  type = "python",
+  request = "launch",
+  name = "Pytest",
+  module = "pytest",
+  args = { "tests" },
+  pythonPath = python,
+  envFile = env_file,
+  cwd = root,
+  console = "internalConsole",
+  justMyCode = false,
+})
