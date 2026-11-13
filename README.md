@@ -14,7 +14,7 @@ Without it the project is generated and you run `uv lock` yourself.
 ## What you get
 
 - `src/<package>/`, tests, docs (mkdocs), ruff, `uv`, a `Makefile` (`make check`, `make pytest`, `make release` ...).
-- GitHub workflows for tests, code quality, docs and releases (optional).
+- GitHub workflows for tests, code quality, docs and releases, and a weekly Dependabot config for `uv` and Actions updates (optional, with `github_workflow`).
 - Qt projects: resources (`.qrc`, `make qrc`), offscreen Qt CI, `pytest-qt`; QML projects add a `qml/` folder and a qmlls config script.
 - Optional PyPI publishing (`make pypi-publish`, `make pypi-publish-dev`).
 - Optional PyInstaller bundling (`make bundle`) and a macOS `.app` (`make iconset`, `make install`).
@@ -36,6 +36,7 @@ steps to a shared one with a double-colon rule (`check::`); the variables a modu
 | `package_name`, `package_slug` | Importable package under `src/` (the slug must be a valid identifier) |
 | `initial_version` | Written to `VERSION`, `pyproject.toml` and `CHANGELOG.rst` |
 | `python_version` | Minimum Python version (`requires-python` and the CI version) |
+| `pin_python_version` | Add a `.python-version` file with that version, so `uv` builds the virtual environment with it |
 | `author`, `author_email`, `github_user` | `pyproject.toml`, `LICENSE`, README badges and links |
 | `github_workflow` | Include the GitHub Actions workflows from `sowwic/gh-workflows` |
 | `release_branch`, `develop_branch` | Used by CI, docs deploy and `make release` |

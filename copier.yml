@@ -49,6 +49,11 @@ python_version:
   help: Minimum Python version (requires-python and CI test version)
   default: "3.14"
 
+pin_python_version:
+  type: bool
+  help: Pin the Python version for local development? (adds .python-version with the minimum version, which uv uses for the virtual environment)
+  default: true
+
 project_type:
   type: str
   help: What kind of project is this?

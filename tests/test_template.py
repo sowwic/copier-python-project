@@ -106,6 +106,36 @@ def test_github_workflows_are_optional(tmp_path):
     assert not any(name.startswith(".github") for name in files(without))
 
 
+def test_dependabot_follows_the_workflows_and_the_develop_branch(tmp_path):
+    with_ci = generate(tmp_path / "a", develop_branch="dev")
+    without = generate(tmp_path / "b", github_workflow=False)
+
+    config = yaml.safe_load((with_ci / ".github/dependabot.yml").read_text())
+
+    assert {u["package-ecosystem"] for u in config["updates"]} == {
+        "uv",
+        "github-actions",
+    }
+    assert {u["target-branch"] for u in config["updates"]} == {"dev"}
+    assert ".github/dependabot.yml" not in files(without)
+
+
+def test_python_version_pin_is_optional(tmp_path):
+    pinned = generate(tmp_path / "a", python_version="3.13")
+    unpinned = generate(tmp_path / "b", pin_python_version=False)
+
+    assert (pinned / ".python-version").read_text().strip() == "3.13"
+    assert ".python-version" not in files(unpinned)
+
+
+def test_dependabot_holds_back_pyside_majors_for_qt_only(tmp_path):
+    qt = generate(tmp_path / "a", project_type="qt_app")
+    plain = generate(tmp_path / "b")
+
+    assert "pyside6*" in (qt / ".github/dependabot.yml").read_text()
+    assert "pyside6" not in (plain / ".github/dependabot.yml").read_text()
+
+
 @pytest.mark.parametrize(
     "ide, present", [("nvim", ".nvim.lua"), ("vscode", ".vscode/settings.json")]
 )

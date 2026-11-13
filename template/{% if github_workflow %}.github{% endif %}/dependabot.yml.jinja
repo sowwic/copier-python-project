@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: "uv"
+    directory: "/"
+    target-branch: "{{ develop_branch }}"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+{%- if is_qt %}
+    ignore:
+      - dependency-name: "pyside6*"
+        update-types: ["version-update:semver-major"]
+{%- endif %}
+    labels: ["dependencies"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "{{ develop_branch }}"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        patterns: ["*"]
