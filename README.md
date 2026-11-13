@@ -22,7 +22,7 @@ Without it the project is generated and you run `uv lock` yourself.
 ## Makefile
 
 The generated `Makefile` is short: it sets a few variables and includes shared modules from
-[`sowwic/makefiles`](https://github.com/sowwic/makefiles) (`general/python`, plus `general/qt`, `general/qml`, `general/bundle` and `general/macos-app` for the project type, and `general/pypi` when publishing to PyPI), which it fetches into `.make/`
+[`sowwic/makefiles`](https://github.com/sowwic/makefiles) (`general/python`, `general/repo`, plus `general/qt`, `general/qml`, `general/bundle` and `general/macos-app` for the project type, and `general/pypi` when publishing to PyPI), which it fetches into `.make/`
 (commit that folder, CI and offline work then need no network). `make update-make` fetches them again, at the
 `MAKEFILES_REF` pinned at the top of the Makefile; bump the pin to take a newer version. The post-generation task
 fetches the modules too, so a new project is ready to commit. Add your own targets below the `include`, or add

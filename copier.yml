@@ -11,6 +11,13 @@ _tasks:
   - "make help >/dev/null 2>&1 || echo 'Could not fetch .make/*.mk from sowwic/makefiles, make fetches them on the first run.'"
   - "command -v uv >/dev/null 2>&1 && uv lock || true"
 
+# Shown after copying: how to turn the folder into the GitHub repo
+_message_after_copy: |
+  {{ project_name }} is ready. To create the GitHub repo (main + develop, default develop, standard rulesets):
+
+    cd {{ _copier_conf.dst_path }}
+    make init-repo        # add REPO_FLAGS=--private for a private repo
+
 project_name:
   type: str
   help: Project name (human readable, used in titles, docs and the app name)

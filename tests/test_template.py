@@ -160,7 +160,7 @@ def test_library_has_no_qt_files(tmp_path):
     project = generate(tmp_path, project_type="library")
 
     check_well_formed(project)
-    assert makefile_modules(project) == ["general/python"]
+    assert makefile_modules(project) == ["general/python", "general/repo"]
     assert "BUILD_PREREQS" not in (project / "Makefile").read_text()
     assert "src/demo_pkg/main.py" not in files(project)
     assert not any("resources" in name or "qml" in name for name in files(project))
@@ -177,7 +177,7 @@ def test_qt_app_has_resources_and_a_main(tmp_path):
         ".vscode/launch.json",
     } <= files(project)
     assert "pyside6" in (project / "pyproject.toml").read_text().lower()
-    assert makefile_modules(project) == ["general/python", "general/qt"]
+    assert makefile_modules(project) == ["general/python", "general/repo", "general/qt"]
     assert "BUILD_PREREQS = qrc" in (project / "Makefile").read_text()
     assert "PYTEST_CMD = QT_QPA_PLATFORM=offscreen" in (project / "Makefile").read_text()
 
@@ -188,7 +188,7 @@ def test_qml_app_adds_qml_and_the_qmlls_script(tmp_path):
     check_well_formed(project)
     assert "src/demo_pkg/qml/qmldir" in files(project)
     assert "generate_qmlls_config.py" in files(project)
-    assert makefile_modules(project) == ["general/python", "general/qt", "general/qml"]
+    assert makefile_modules(project) == ["general/python", "general/repo", "general/qt", "general/qml"]
 
 
 def test_bundling_adds_the_spec_and_the_macos_app_targets(tmp_path):
@@ -198,6 +198,7 @@ def test_bundling_adds_the_spec_and_the_macos_app_targets(tmp_path):
     assert "demo-project.spec" in files(project)
     assert makefile_modules(project) == [
         "general/python",
+        "general/repo",
         "general/qt",
         "general/bundle",
         "general/macos-app",
@@ -217,7 +218,7 @@ def test_pypi_publishing_adds_the_module_name_and_urls(tmp_path):
 
     check_well_formed(project)
     pyproject = tomllib.loads((project / "pyproject.toml").read_text())
-    assert makefile_modules(project) == ["general/python", "general/pypi"]
+    assert makefile_modules(project) == ["general/python", "general/repo", "general/pypi"]
     assert pyproject["project"]["name"] == "demo-on-pypi"
     assert pyproject["project"]["urls"]["Homepage"].endswith("/sowwic/demo-project")
     assert answers(project)["pypi_name"] == "demo-on-pypi"
@@ -236,7 +237,7 @@ def test_pypi_is_off_by_default(tmp_path):
 
     check_well_formed(project)
     pyproject = tomllib.loads((project / "pyproject.toml").read_text())
-    assert makefile_modules(project) == ["general/python"]
+    assert makefile_modules(project) == ["general/python", "general/repo"]
     assert "urls" not in pyproject["project"]
     assert pyproject["project"]["name"] == "demo-project"
     assert "pypi_name" not in answers(project)
