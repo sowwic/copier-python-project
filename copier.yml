@@ -70,6 +70,21 @@ macos_app:
   default: false
   when: "{{ bundle_app }}"
 
+publish_to_pypi:
+  type: bool
+  help: Publish to PyPI? (adds `make pypi-publish` and `make pypi-publish-dev` for TestPyPI, and project URLs)
+  default: false
+
+pypi_name:
+  type: str
+  help: Project name on PyPI (the `name` in pyproject.toml, what users `pip install`)
+  default: "{{ project_slug }}"
+  when: "{{ publish_to_pypi }}"
+  validator: >-
+    {% if not (pypi_name | regex_search('^[A-Za-z0-9][A-Za-z0-9._-]*$')) %}
+    must be letters, digits, '.', '_' or '-'
+    {% endif %}
+
 author:
   type: str
   help: Author name (pyproject.toml, LICENSE, docs)
@@ -120,6 +135,11 @@ is_qml:
   type: bool
   when: false
   default: "{{ project_type == 'qml_app' }}"
+
+dist_name:
+  type: str
+  when: false
+  default: "{{ pypi_name if publish_to_pypi else project_slug }}"
 
 bundle:
   type: bool

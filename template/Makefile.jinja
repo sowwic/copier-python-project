@@ -10,7 +10,7 @@ BUILD_PREREQS = qrc
 
 MAKEFILES_REF ?= v1
 MAKEFILES_URL ?= https://raw.githubusercontent.com/sowwic/makefiles/$(MAKEFILES_REF)
-MAKEFILES_MODULES = general/python{% if is_qt %} general/qt{% endif %}{% if is_qml %} general/qml{% endif %}{% if bundle %} general/bundle{% endif %}{% if macos %} general/macos-app{% endif %}
+MAKEFILES_MODULES = general/python{% if is_qt %} general/qt{% endif %}{% if is_qml %} general/qml{% endif %}{% if bundle %} general/bundle{% endif %}{% if macos %} general/macos-app{% endif %}{% if publish_to_pypi %} general/pypi{% endif %}
 
 .make/%.mk:
 	@mkdir -p $(dir $@)

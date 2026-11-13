@@ -16,12 +16,13 @@ Without it the project is generated and you run `uv lock` yourself.
 - `src/<package>/`, tests, docs (mkdocs), ruff, `uv`, a `Makefile` (`make check`, `make pytest`, `make release` ...).
 - GitHub workflows for tests, code quality, docs and releases (optional).
 - Qt projects: resources (`.qrc`, `make qrc`), offscreen Qt CI, `pytest-qt`; QML projects add a `qml/` folder and a qmlls config script.
+- Optional PyPI publishing (`make pypi-publish`, `make pypi-publish-dev`).
 - Optional PyInstaller bundling (`make bundle`) and a macOS `.app` (`make iconset`, `make install`).
 
 ## Makefile
 
 The generated `Makefile` is short: it sets a few variables and includes shared modules from
-[`sowwic/makefiles`](https://github.com/sowwic/makefiles) (`general/python`, plus `general/qt`, `general/qml`, `general/bundle` and `general/macos-app` for the project type), which it fetches into `.make/`
+[`sowwic/makefiles`](https://github.com/sowwic/makefiles) (`general/python`, plus `general/qt`, `general/qml`, `general/bundle` and `general/macos-app` for the project type, and `general/pypi` when publishing to PyPI), which it fetches into `.make/`
 (commit that folder, CI and offline work then need no network). `make update-make` fetches them again, at the
 `MAKEFILES_REF` pinned at the top of the Makefile; bump the pin to take a newer version. The post-generation task
 fetches the modules too, so a new project is ready to commit. Add your own targets below the `include`, or add
@@ -38,6 +39,7 @@ steps to a shared one with a double-colon rule (`check::`); the variables a modu
 | `author`, `author_email`, `github_user` | `pyproject.toml`, `LICENSE`, README badges and links |
 | `github_workflow` | Include the GitHub Actions workflows from `sowwic/gh-workflows` |
 | `release_branch`, `develop_branch` | Used by CI, docs deploy and `make release` |
+| `publish_to_pypi`, `pypi_name` | Add `make pypi-publish` (PyPI) and `make pypi-publish-dev` (TestPyPI), project URLs, and the name on PyPI |
 | `ide` | Neovim, VS Code, Zed (Qt projects only) or none |
 | `project_type` | `library`, `qt_app` or `qml_app` |
 | `bundle_app`, `macos_app` | Qt/QML only: PyInstaller bundle, macOS `.app` |

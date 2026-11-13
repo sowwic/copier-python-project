@@ -182,10 +182,40 @@ def test_bundling_is_not_asked_for_a_library(tmp_path):
     assert "bundle_app" not in answers(project)
 
 
+def test_pypi_publishing_adds_the_module_name_and_urls(tmp_path):
+    project = generate(tmp_path, publish_to_pypi=True, pypi_name="demo-on-pypi")
+
+    check_well_formed(project)
+    pyproject = tomllib.loads((project / "pyproject.toml").read_text())
+    assert makefile_modules(project) == ["general/python", "general/pypi"]
+    assert pyproject["project"]["name"] == "demo-on-pypi"
+    assert pyproject["project"]["urls"]["Homepage"].endswith("/sowwic/demo-project")
+    assert answers(project)["pypi_name"] == "demo-on-pypi"
+
+
+def test_pypi_name_defaults_to_the_project_slug(tmp_path):
+    project = generate(tmp_path, publish_to_pypi=True)
+
+    pyproject = tomllib.loads((project / "pyproject.toml").read_text())
+
+    assert pyproject["project"]["name"] == "demo-project"
+
+
+def test_pypi_is_off_by_default(tmp_path):
+    project = generate(tmp_path, pypi_name="ignored")
+
+    check_well_formed(project)
+    pyproject = tomllib.loads((project / "pyproject.toml").read_text())
+    assert makefile_modules(project) == ["general/python"]
+    assert "urls" not in pyproject["project"]
+    assert pyproject["project"]["name"] == "demo-project"
+    assert "pypi_name" not in answers(project)
+
+
 def test_computed_values_are_not_saved_in_the_answers(tmp_path):
     saved = answers(generate(tmp_path, project_type="qt_app"))
 
-    assert not {"is_qt", "is_qml", "bundle", "macos"} & set(saved)
+    assert not {"is_qt", "is_qml", "bundle", "macos", "dist_name"} & set(saved)
     assert saved["project_type"] == "qt_app"
 
 
